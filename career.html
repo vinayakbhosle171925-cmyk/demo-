@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Career — Future Career Observatory</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
+          <rect width="24" height="24" rx="4" fill="#0b72ff"/>
+          <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="12" fill="#fff">FCO</text>
+        </svg>
+        <span>Future Career Observatory</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <a href="index.html" style="display:inline-block;margin:18px 0;color:var(--accent)">← Back to Explorer</a>
+    <div id="career-detail" class="preview-card" style="padding:22px;">
+      <h2>Loading…</h2>
+      <p class="muted">Fetching career information.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© Future Career Observatory</div>
+    </div>
+  </footer>
+
+  <script>
+    async function getQueryParam(name) {
+      return new URLSearchParams(location.search).get(name);
+    }
+
+    function el(tag, cls, html) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (html !== undefined) e.innerHTML = html;
+      return e;
+    }
+
+    (async function renderCareer() {
+      const id = await getQueryParam('id');
+      const container = document.getElementById('career-detail');
+
+      try {
+        const res = await fetch('careers.json');
+        const careers = await res.json();
+        const career = careers.find(c => c.id === id);
+
+        if (!career) {
+          container.innerHTML = '<h2>Career not found</h2><p class="muted">No data found for this career id.</p>';
+          return;
+        }
+
+        container.innerHTML = '';
+        container.appendChild(el('h1', null, career.title));
+        container.appendChild(el('p', 'muted', `Sector: ${career.sector} · Salary: ${career.salary_range} · FCI: ${career.fci_score}`));
+        container.appendChild(el('p', null, career.summary));
+
+        // Skills
+        container.appendChild(el('h3', null, 'Key skills'));
+        const ulSkills = el('ul', null);
+        (career.skills || []).forEach(s => ulSkills.appendChild(el('li', null, s)));
+        container.appendChild(ulSkills);
+
+        // Roadmap
+        if (career.roadmap && career.roadmap.length) {
+          container.appendChild(el('h3', null, '3-step Roadmap'));
+          const ol = el('ol', null);
+          career.roadmap.forEach(step => ol.appendChild(el('li', null, step)));
+          container.appendChild(ol);
+        }
+
+        // Resources
+        if (career.resources && career.resources.length) {
+          container.appendChild(el('h3', null, 'Resources'));
+          const ul = el('ul', null);
+          career.resources.forEach(r => {
+            const a = el('a', null, r.title);
+            a.href = r.url;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            const li = el('li', null);
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+          container.appendChild(ul);
+        }
+
+      } catch (err) {
+        container.innerHTML = '<h2>Error</h2><p class="muted">Failed to load career data.</p>';
+        console.error(err);
+      }
+    })();
+  </script>
+</body>
+</html>
