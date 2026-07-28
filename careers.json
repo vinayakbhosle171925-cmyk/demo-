@@ -1,0 +1,62 @@
+[
+  {
+    "id": "data-scientist",
+    "title": "Data Scientist",
+    "sector": "Technology",
+    "salary_range": "100+",
+    "ai_vulnerability": "low",
+    "fci_score": 82,
+    "summary": "Analyze and interpret complex data to help organizations make informed decisions.",
+    "skills": ["Python", "Statistics", "Machine Learning", "Data Visualization"],
+    "roadmap": ["Entry: Learn Python & statistics", "Mid: Build ML projects & obtain certifications", "Advanced: Specialize in deep learning or domain expertise"],
+    "resources": [{"title":"Coursera - Data Science Specialization","url":"https://www.coursera.org/"}]
+  },
+  {
+    "id": "registered-nurse",
+    "title": "Registered Nurse",
+    "sector": "Healthcare",
+    "salary_range": "50-100",
+    "ai_vulnerability": "medium",
+    "fci_score": 61,
+    "summary": "Provide and coordinate patient care, educate patients and the public about various health conditions.",
+    "skills": ["Patient Care", "Clinical Knowledge", "Communication"],
+    "roadmap": ["Entry: Nursing degree & licensure", "Mid: Specialized certifications (ER, ICU)", "Advanced: Nurse practitioner or leadership roles"],
+    "resources": [{"title":"U.S. Bureau of Labor Statistics - Nursing","url":"https://www.bls.gov/"}]
+  },
+  {
+    "id": "graphic-designer",
+    "title": "Graphic Designer",
+    "sector": "Creative",
+    "salary_range": "50-100",
+    "ai_vulnerability": "high",
+    "fci_score": 39,
+    "summary": "Create visual concepts to communicate ideas that inspire, inform, or captivate consumers.",
+    "skills": ["Design Tools", "Creativity", "Branding"],
+    "roadmap": ["Entry: Build portfolio & learn design tools", "Mid: Work with agencies or in-house teams", "Advanced: Specialize in UX or motion design"],
+    "resources": [{"title":"Adobe Tutorials","url":"https://helpx.adobe.com/"}]
+  },
+  {
+    "id": "electrician",
+    "title": "Electrician",
+    "sector": "Trades",
+    "salary_range": "50-100",
+    "ai_vulnerability": "low",
+    "fci_score": 74,
+    "summary": "Install, maintain, and repair electrical systems in homes and businesses.",
+    "skills": ["Technical Knowledge", "Problem Solving", "Safety Practices"],
+    "roadmap": ["Entry: Apprenticeship & certification", "Mid: Specialize in residential/commercial systems", "Advanced: Master electrician or business owner"],
+    "resources": [{"title":"National Electrical Contractors Association","url":"https://www.necanet.org/"}]
+  },
+  {
+    "id": "cyber-security-analyst",
+    "title": "Cyber Security Analyst",
+    "sector": "Technology",
+    "salary_range": "100+",
+    "ai_vulnerability": "medium",
+    "fci_score": 78,
+    "summary": "Protect systems and networks from digital attacks and investigate security breaches.",
+    "skills": ["Networking", "Incident Response", "Threat Analysis"],
+    "roadmap": ["Entry: Learn networking & security fundamentals", "Mid: Certifications (CompTIA, CISSP)", "Advanced: Security architect or red team lead"],
+    "resources": [{"title":"SANS Institute","url":"https://www.sans.org/"}]
+  }
+]
