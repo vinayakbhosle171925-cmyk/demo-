@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Future Career Observatory</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#">
+        <!-- placeholder SVG -->
+        <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true">
+          <rect width="24" height="24" rx="4" fill="#0b72ff"/>
+          <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="12" fill="#fff">FCO</text>
+        </svg>
+        <span>Future Career Observatory</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="#explorer">Explore</a>
+        <a href="#index">Index</a>
+        <a href="#reports">Reports</a>
+        <a href="#about">About</a>
+        <a href="#contact" class="cta">Contact</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1>Future Career Observatory</h1>
+          <p class="tagline">Evidence-based insights on career trends, emerging skills, and AI risk — helping students and job seekers plan resilient careers.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#explorer">Explore Careers</a>
+            <a class="btn" href="#reports">Read the Report</a>
+          </div>
+        </div>
+        <div class="hero-preview">
+          <div class="preview-card">
+            <h3>Future Career Index</h3>
+            <p>AI Vulnerability · Growth Outlook · Skills</p>
+            <div class="badge">Sample Score: 72</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="explorer" class="explorer container">
+      <h2>Career Explorer</h2>
+      <p class="muted">Search and filter careers by salary, required education, sector, and AI risk score.</p>
+
+      <div class="explorer-controls">
+        <input id="search" type="search" placeholder="Search careers (e.g., Data Scientist, Nurse)" />
+
+        <div class="filters">
+          <select id="sector">
+            <option value="">All sectors</option>
+            <option>Healthcare</option>
+            <option>Technology</option>
+            <option>Creative</option>
+            <option>Trades</option>
+          </select>
+
+          <select id="aiRisk">
+            <option value="">AI risk (any)</option>
+            <option value="low">Low (0-33)</option>
+            <option value="medium">Medium (34-66)</option>
+            <option value="high">High (67-100)</option>
+          </select>
+
+          <select id="salary">
+            <option value="">Salary</option>
+            <option value="0-50">Under $50k</option>
+            <option value="50-100">$50k–$100k</option>
+            <option value="100+">$100k+</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="cards" class="card-grid">
+        <!-- Sample cards; later populated from DB -->
+        <article class="card" data-title="Data Scientist" data-sector="Technology" data-airisk="low" data-salary="100+">
+          <h3>Data Scientist</h3>
+          <p class="meta">Sector: Technology · Salary: $100k+</p>
+          <p class="score">AI Vulnerability: Low · FCI: 82</p>
+          <a class="card-link" href="#">View details →</a>
+        </article>
+
+        <article class="card" data-title="Registered Nurse" data-sector="Healthcare" data-airisk="medium" data-salary="50-100">
+          <h3>Registered Nurse</h3>
+          <p class="meta">Sector: Healthcare · Salary: $50k–$100k</p>
+          <p class="score">AI Vulnerability: Medium · FCI: 61</p>
+          <a class="card-link" href="#">View details →</a>
+        </article>
+
+        <article class="card" data-title="Graphic Designer" data-sector="Creative" data-airisk="high" data-salary="50-100">
+          <h3>Graphic Designer</h3>
+          <p class="meta">Sector: Creative · Salary: $50k–$100k</p>
+          <p class="score">AI Vulnerability: High · FCI: 39</p>
+          <a class="card-link" href="#">View details →</a>
+        </article>
+
+        <article class="card" data-title="Electrician" data-sector="Trades" data-airisk="low" data-salary="50-100">
+          <h3>Electrician</h3>
+          <p class="meta">Sector: Trades · Salary: $50k–$100k</p>
+          <p class="score">AI Vulnerability: Low · FCI: 74</p>
+          <a class="card-link" href="#">View details →</a>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="index" class="container features">
+      <h2>What we’ll build</h2>
+      <div class="feature-grid">
+        <div class="feature">
+          <h3>Future Career Index</h3>
+          <p>Composite score combining AI vulnerability and skills demand (0–100).</p>
+        </div>
+        <div class="feature">
+          <h3>Interactive Dashboards</h3>
+          <p>Filters, visualizations, and career roadmaps for each job.</p>
+        </div>
+        <div class="feature">
+          <h3>Reports & Research</h3>
+          <p>Annual reports and downloadable job-focused PDFs.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="reports" class="container reports">
+      <h2>Latest Reports</h2>
+      <p class="muted">(Placeholder) Annual Future Career Report will appear here.</p>
+    </section>
+
+    <section id="about" class="container about">
+      <h2>About</h2>
+      <p>Student-led research initiative using economics, statistics, and data science to map the future of careers in the age of AI.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© Future Career Observatory — Project kickoff: 27 July 2026</div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Contribute</a>
+        <a href="mailto:futurecareerobservatory@gmail.com">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
