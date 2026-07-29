@@ -34,16 +34,6 @@
           <!-- summary inserted here -->
         </div>
 
-        <div id="career-actions" style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
-          <button id="save-fav" class="btn">Save to profile</button>
-          <label class="btn" for="resume-upload-input" style="cursor:pointer">Upload Resume</label>
-          <input id="resume-upload-input" type="file" accept=".pdf,.doc,.docx,.txt" style="display:none" />
-          <button id="ai-simulator" class="btn">AI Replacement Simulator</button>
-          <a id="google-doc-btn" class="btn" href="#">Open detailed Google Doc (placeholder)</a>
-        </div>
-
-        <div id="resume-parse-result" style="margin-top:14px"></div>
-
         <section id="ai-breakdown" style="margin-top:22px">
           <h3>Task-level AI Breakdown</h3>
           <p class="muted">Placeholder: breakdown of specific tasks and their AI vulnerability.</p>
@@ -101,7 +91,7 @@
   </footer>
 
   <script>
-    // Render career details into the new two-column layout
+    // Render career details into the two-column layout (resume/upload and simulator removed)
     async function getQueryParam(name) { return new URLSearchParams(location.search).get(name); }
     function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
 
@@ -112,7 +102,6 @@
       const coursesTop = document.getElementById('courses-top');
       const aiList = document.getElementById('ai-breakdown-list');
       const roadmapList = document.getElementById('roadmap-list');
-      const resumeResult = document.getElementById('resume-parse-result');
 
       try {
         const res = await fetch('careers.json');
@@ -120,8 +109,8 @@
         const career = careers.find(c => c.id === id);
 
         if (!career) {
-          main.querySelector('#career-title').textContent = 'Career not found';
-          main.querySelector('#career-meta').textContent = '';
+          document.getElementById('career-title').textContent = 'Career not found';
+          document.getElementById('career-meta').textContent = '';
           return;
         }
 
@@ -160,43 +149,9 @@
           apList.appendChild(li);
         });
 
-        // Resume parse placeholder (empty until user uploads)
-        resumeResult.innerHTML = '<div class="muted">Upload your resume to see a skill-gap analysis (placeholder).</div>';
-
-        // Google Doc button: currently placeholder; later we will link to a doc URL
-        const gbtn = document.getElementById('google-doc-btn');
-        gbtn.href = '#';
-
       } catch (err) {
         console.error(err);
       }
-
-      // Resume upload handler (placeholder parse)
-      const uploadInput = document.getElementById('resume-upload-input');
-      uploadInput.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        resumeResult.innerHTML = `<div class="preview-card" style="padding:12px"><strong>Uploaded:</strong> ${file.name}<p class=\"muted\">(Resume parsing placeholder) Detected skills: <em>communication, problem solving</em></p><button id=\"show-gap\" class=\"btn\">Show Skill Gap Analysis (placeholder)</button></div>`;
-
-        document.getElementById('show-gap')?.addEventListener('click', () => {
-          // Placeholder gap analysis UI
-          const gap = document.createElement('div');
-          gap.className = 'preview-card';
-          gap.style.marginTop = '12px';
-          gap.innerHTML = `<h4>Skill Gap Analysis</h4><p class=\"muted\">This is a mock result. In a full implementation we'd compare parsed resume skills to the career's required skills and list gaps.</p><ul><li>Missing: Machine Learning</li><li>Missing: Data Visualization</li></ul>`;
-          resumeResult.appendChild(gap);
-        });
-      });
-
-      // Save to profile placeholder
-      document.getElementById('save-fav').addEventListener('click', () => {
-        alert('Save to profile requires user accounts — placeholder action.');
-      });
-
-      // AI simulator placeholder
-      document.getElementById('ai-simulator').addEventListener('click', () => {
-        alert('AI Replacement Simulator is a future feature — placeholder.');
-      });
 
     })();
   </script>
