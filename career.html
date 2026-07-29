@@ -19,11 +19,78 @@
     </div>
   </header>
 
-  <main class="container">
-    <a href="index.html" style="display:inline-block;margin:18px 0;color:var(--accent)">← Back to Explorer</a>
-    <div id="career-detail" class="preview-card" style="padding:22px;">
-      <h2>Loading…</h2>
-      <p class="muted">Fetching career information.</p>
+  <main class="container career-page">
+    <a href="index.html" class="back-link">← Back to Explorer</a>
+
+    <div id="career-root" class="career-layout">
+      <section id="career-main" class="main-column preview-card">
+        <!-- Left / main column: title, general info, AI breakdown, roadmap, visualizations -->
+        <div id="career-head">
+          <h1 id="career-title">Loading…</h1>
+          <p id="career-meta" class="muted">Fetching career information.</p>
+        </div>
+
+        <div id="career-summary">
+          <!-- summary inserted here -->
+        </div>
+
+        <div id="career-actions" style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
+          <button id="save-fav" class="btn">Save to profile</button>
+          <label class="btn" for="resume-upload-input" style="cursor:pointer">Upload Resume</label>
+          <input id="resume-upload-input" type="file" accept=".pdf,.doc,.docx,.txt" style="display:none" />
+          <button id="ai-simulator" class="btn">AI Replacement Simulator</button>
+          <a id="google-doc-btn" class="btn" href="#">Open detailed Google Doc (placeholder)</a>
+        </div>
+
+        <div id="resume-parse-result" style="margin-top:14px"></div>
+
+        <section id="ai-breakdown" style="margin-top:22px">
+          <h3>Task-level AI Breakdown</h3>
+          <p class="muted">Placeholder: breakdown of specific tasks and their AI vulnerability.</p>
+          <div class="ai-breakdown-list" id="ai-breakdown-list">
+            <!-- items inserted here -->
+          </div>
+        </section>
+
+        <section id="risk-reward" style="margin-top:22px">
+          <h3>Risk / Reward Matrix</h3>
+          <p class="muted">Interactive scatterplot (salary vs AI vulnerability)</p>
+          <div class="matrix" id="matrix-canvas">(matrix placeholder)</div>
+        </section>
+
+        <section id="roadmap" style="margin-top:22px">
+          <h3>Personalized Roadmap</h3>
+          <p class="muted">3-step action plan and ability to add milestones (requires account).</p>
+          <ol id="roadmap-list"></ol>
+        </section>
+      </section>
+
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h4>Courses (Top)</h4>
+          <div id="courses-top" class="course-list">
+            <!-- Coursera / Udemy cards go here -->
+            <div class="course-platform">Coursera</div>
+            <div class="course-platform">Udemy</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <h4>Essential High School Courses</h4>
+          <p class="muted">Recommended APs / core courses for this career</p>
+          <ul id="ap-list" class="ap-list"></ul>
+        </div>
+
+        <div class="sidebar-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#">Local training centres</a></li>
+            <li><a href="#">Certifications</a></li>
+            <li><a href="#">Professional bodies</a></li>
+          </ul>
+        </div>
+
+      </aside>
     </div>
   </main>
 
@@ -34,20 +101,18 @@
   </footer>
 
   <script>
-    async function getQueryParam(name) {
-      return new URLSearchParams(location.search).get(name);
-    }
-
-    function el(tag, cls, html) {
-      const e = document.createElement(tag);
-      if (cls) e.className = cls;
-      if (html !== undefined) e.innerHTML = html;
-      return e;
-    }
+    // Render career details into the new two-column layout
+    async function getQueryParam(name) { return new URLSearchParams(location.search).get(name); }
+    function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
 
     (async function renderCareer() {
       const id = await getQueryParam('id');
-      const container = document.getElementById('career-detail');
+      const main = document.getElementById('career-main');
+      const apList = document.getElementById('ap-list');
+      const coursesTop = document.getElementById('courses-top');
+      const aiList = document.getElementById('ai-breakdown-list');
+      const roadmapList = document.getElementById('roadmap-list');
+      const resumeResult = document.getElementById('resume-parse-result');
 
       try {
         const res = await fetch('careers.json');
@@ -55,49 +120,84 @@
         const career = careers.find(c => c.id === id);
 
         if (!career) {
-          container.innerHTML = '<h2>Career not found</h2><p class="muted">No data found for this career id.</p>';
+          main.querySelector('#career-title').textContent = 'Career not found';
+          main.querySelector('#career-meta').textContent = '';
           return;
         }
 
-        container.innerHTML = '';
-        container.appendChild(el('h1', null, career.title));
-        container.appendChild(el('p', 'muted', `Sector: ${career.sector} · Salary: ${career.salary_range} · FCI: ${career.fci_score}`));
-        container.appendChild(el('p', null, career.summary));
+        // Header
+        document.getElementById('career-title').textContent = career.title;
+        document.getElementById('career-meta').textContent = `Sector: ${career.sector} · Salary: ${career.salary_range} · FCI: ${career.fci_score}`;
 
-        // Skills
-        container.appendChild(el('h3', null, 'Key skills'));
-        const ulSkills = el('ul', null);
-        (career.skills || []).forEach(s => ulSkills.appendChild(el('li', null, s)));
-        container.appendChild(ulSkills);
+        // Summary
+        const summary = document.getElementById('career-summary');
+        summary.innerHTML = '';
+        summary.appendChild(el('p', null, career.summary || ''));
 
         // Roadmap
-        if (career.roadmap && career.roadmap.length) {
-          container.appendChild(el('h3', null, '3-step Roadmap'));
-          const ol = el('ol', null);
-          career.roadmap.forEach(step => ol.appendChild(el('li', null, step)));
-          container.appendChild(ol);
-        }
+        roadmapList.innerHTML = '';
+        (career.roadmap || []).forEach(step => roadmapList.appendChild(el('li', null, step)));
 
-        // Resources
-        if (career.resources && career.resources.length) {
-          container.appendChild(el('h3', null, 'Resources'));
-          const ul = el('ul', null);
-          career.resources.forEach(r => {
-            const a = el('a', null, r.title);
-            a.href = r.url;
-            a.target = '_blank';
-            a.rel = 'noopener';
-            const li = el('li', null);
-            li.appendChild(a);
-            ul.appendChild(li);
-          });
-          container.appendChild(ul);
-        }
+        // Skills -> shown in AI breakdown as simple example of tasks
+        aiList.innerHTML = '';
+        (career.skills || []).forEach(skill => {
+          const item = el('div', 'ai-item', `<strong>${skill}</strong> — task-level note (placeholder)`);
+          aiList.appendChild(item);
+        });
+
+        // Courses (top right) — placeholders for Coursera/Udemy cards
+        coursesTop.innerHTML = '';
+        const coursera = el('div', 'course-card', `<strong>Coursera:</strong> Top courses for ${career.title}`);
+        const udemy = el('div', 'course-card', `<strong>Udemy:</strong> Top courses for ${career.title}`);
+        coursesTop.appendChild(coursera);
+        coursesTop.appendChild(udemy);
+
+        // AP / high school course suggestions (placeholder links)
+        apList.innerHTML = '';
+        const suggestedAPs = ['AP Calculus', 'AP Computer Science', 'AP Statistics', 'AP Biology'];
+        suggestedAPs.forEach(ap => {
+          const li = el('li', null, `<a href="#">${ap}</a>`);
+          apList.appendChild(li);
+        });
+
+        // Resume parse placeholder (empty until user uploads)
+        resumeResult.innerHTML = '<div class="muted">Upload your resume to see a skill-gap analysis (placeholder).</div>';
+
+        // Google Doc button: currently placeholder; later we will link to a doc URL
+        const gbtn = document.getElementById('google-doc-btn');
+        gbtn.href = '#';
 
       } catch (err) {
-        container.innerHTML = '<h2>Error</h2><p class="muted">Failed to load career data.</p>';
         console.error(err);
       }
+
+      // Resume upload handler (placeholder parse)
+      const uploadInput = document.getElementById('resume-upload-input');
+      uploadInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        resumeResult.innerHTML = `<div class="preview-card" style="padding:12px"><strong>Uploaded:</strong> ${file.name}<p class=\"muted\">(Resume parsing placeholder) Detected skills: <em>communication, problem solving</em></p><button id=\"show-gap\" class=\"btn\">Show Skill Gap Analysis (placeholder)</button></div>`;
+
+        document.getElementById('show-gap')?.addEventListener('click', () => {
+          // Placeholder gap analysis UI
+          const gap = document.createElement('div');
+          gap.className = 'preview-card';
+          gap.style.marginTop = '12px';
+          gap.innerHTML = `<h4>Skill Gap Analysis</h4><p class=\"muted\">This is a mock result. In a full implementation we'd compare parsed resume skills to the career's required skills and list gaps.</p><ul><li>Missing: Machine Learning</li><li>Missing: Data Visualization</li></ul>`;
+          resumeResult.appendChild(gap);
+        });
+      });
+
+      // Save to profile placeholder
+      document.getElementById('save-fav').addEventListener('click', () => {
+        alert('Save to profile requires user accounts — placeholder action.');
+      });
+
+      // AI simulator placeholder
+      document.getElementById('ai-simulator').addEventListener('click', () => {
+        alert('AI Replacement Simulator is a future feature — placeholder.');
+      });
+
     })();
   </script>
 </body>
