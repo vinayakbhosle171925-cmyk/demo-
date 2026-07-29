@@ -24,22 +24,17 @@
 
     <div id="career-root" class="career-layout">
       <section id="career-main" class="main-column preview-card">
-        <!-- Left / main column: title, general info, AI breakdown, roadmap, visualizations -->
         <div id="career-head">
           <h1 id="career-title">Loading…</h1>
           <p id="career-meta" class="muted">Fetching career information.</p>
         </div>
 
-        <div id="career-summary">
-          <!-- summary inserted here -->
-        </div>
+        <div id="career-summary"></div>
 
         <section id="ai-breakdown" style="margin-top:22px">
           <h3>Task-level AI Breakdown</h3>
           <p class="muted">Placeholder: breakdown of specific tasks and their AI vulnerability.</p>
-          <div class="ai-breakdown-list" id="ai-breakdown-list">
-            <!-- items inserted here -->
-          </div>
+          <div class="ai-breakdown-list" id="ai-breakdown-list"></div>
         </section>
 
         <section id="risk-reward" style="margin-top:22px">
@@ -55,17 +50,15 @@
         </section>
       </section>
 
-      <aside class="sidebar">
-        <div class="sidebar-section">
-          <h4>Courses (Top)</h4>
+      <aside class="sidebar preview-card">
+        <div class="sidebar-section courses-section">
+          <h4>Top courses</h4>
           <div id="courses-top" class="course-list">
-            <!-- Coursera / Udemy cards go here -->
-            <div class="course-platform">Coursera</div>
-            <div class="course-platform">Udemy</div>
+            <!-- Coursera button will be injected here -->
           </div>
         </div>
 
-        <div class="sidebar-section">
+        <div class="sidebar-section hs-section">
           <h4>Essential High School Courses</h4>
           <p class="muted">Recommended APs / core courses for this career</p>
           <ul id="ap-list" class="ap-list"></ul>
@@ -79,8 +72,11 @@
             <li><a href="#">Professional bodies</a></li>
           </ul>
         </div>
-
       </aside>
+
+      <!-- High school courses visual only (bottom-right) -->
+      <div id="hs-bottom" class="hs-bottom"></div>
+
     </div>
   </main>
 
@@ -91,17 +87,16 @@
   </footer>
 
   <script>
-    // Render career details into the two-column layout (resume/upload and simulator removed)
     async function getQueryParam(name) { return new URLSearchParams(location.search).get(name); }
     function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
 
     (async function renderCareer() {
       const id = await getQueryParam('id');
-      const main = document.getElementById('career-main');
       const apList = document.getElementById('ap-list');
       const coursesTop = document.getElementById('courses-top');
       const aiList = document.getElementById('ai-breakdown-list');
       const roadmapList = document.getElementById('roadmap-list');
+      const hsBottom = document.getElementById('hs-bottom');
 
       try {
         const res = await fetch('careers.json');
@@ -114,7 +109,6 @@
           return;
         }
 
-        // Header
         document.getElementById('career-title').textContent = career.title;
         document.getElementById('career-meta').textContent = `Sector: ${career.sector} · Salary: ${career.salary_range} · FCI: ${career.fci_score}`;
 
@@ -127,32 +121,46 @@
         roadmapList.innerHTML = '';
         (career.roadmap || []).forEach(step => roadmapList.appendChild(el('li', null, step)));
 
-        // Skills -> shown in AI breakdown as simple example of tasks
+        // AI breakdown (skills as placeholder tasks)
         aiList.innerHTML = '';
         (career.skills || []).forEach(skill => {
           const item = el('div', 'ai-item', `<strong>${skill}</strong> — task-level note (placeholder)`);
           aiList.appendChild(item);
         });
 
-        // Courses (top right) — placeholders for Coursera/Udemy cards
+        // Courses top: create a curved button for Coursera (placeholder link)
         coursesTop.innerHTML = '';
-        const coursera = el('div', 'course-card', `<strong>Coursera:</strong> Top courses for ${career.title}`);
-        const udemy = el('div', 'course-card', `<strong>Udemy:</strong> Top courses for ${career.title}`);
-        coursesTop.appendChild(coursera);
-        coursesTop.appendChild(udemy);
+        const courseraBtn = document.createElement('a');
+        courseraBtn.className = 'coursera-btn';
+        courseraBtn.href = career.coursera_url || '#'; // if you add coursera_url to careers.json it will be used
+        courseraBtn.target = '_blank';
+        courseraBtn.rel = 'noopener';
+        courseraBtn.textContent = 'Browse Coursera Courses';
+        coursesTop.appendChild(courseraBtn);
 
-        // AP / high school course suggestions (placeholder links)
+        // Udemy card (simple)
+        const udemyCard = el('div', 'course-card', `<strong>Udemy:</strong> Top courses for ${career.title}`);
+        coursesTop.appendChild(udemyCard);
+
+        // High-school APs: render in sidebar list (non-links) and also show bottom-right plain text
+        const suggestedAPs = career.high_school_recs || ['AP Calculus', 'AP Computer Science', 'AP Statistics', 'AP Biology'];
         apList.innerHTML = '';
-        const suggestedAPs = ['AP Calculus', 'AP Computer Science', 'AP Statistics', 'AP Biology'];
         suggestedAPs.forEach(ap => {
-          const li = el('li', null, `<a href="#">${ap}</a>`);
+          const li = el('li', null, ap);
           apList.appendChild(li);
         });
+
+        // Bottom-right plain text (visual only)
+        hsBottom.innerHTML = '';
+        const hr = el('div', 'hs-bottom-inner', '<h4>Recommended High School Courses</h4>');
+        const ul = el('ul', 'hs-list');
+        suggestedAPs.forEach(ap => ul.appendChild(el('li', null, ap)));
+        hsBottom.appendChild(hr);
+        hsBottom.appendChild(ul);
 
       } catch (err) {
         console.error(err);
       }
-
     })();
   </script>
 </body>
